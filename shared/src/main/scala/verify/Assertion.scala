@@ -20,7 +20,7 @@ trait Assertion extends asserts.AssertEquals[Unit] {
   override protected def stringAssertEqualsListener = PowerAssert.stringAssertEqualsListener
   lazy val assert: PowerAssert = new PowerAssert()
 
-  def intercept[E <: Throwable: ClassTag](callback: => Unit)(implicit pos: SourceLocation): Unit = {
+  def intercept[E <: Throwable: ClassTag](callback: => Unit)(implicit pos: SourceLocation): Throwable = {
 
     val E = implicitly[ClassTag[E]]
     try {
@@ -31,7 +31,7 @@ trait Assertion extends asserts.AssertEquals[Unit] {
       case ex: InterceptException =>
         throw new AssertionError(ex.getMessage)
       case ex: Throwable if E.runtimeClass.isInstance(ex) =>
-        () // Do nothing!
+         ex
     }
   }
 

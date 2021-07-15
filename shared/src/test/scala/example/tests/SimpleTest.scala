@@ -55,15 +55,17 @@ object SimpleTest extends BasicTestSuite {
     intercept[AssertionError] {
       assert(s == "dummy")
     }
+    ()
   }
 
   test("intercept") {
-    class DummyException extends RuntimeException
+    class DummyException(message: String) extends RuntimeException(message)
     def test = 1
 
-    intercept[DummyException] {
-      if (test != 2) throw new DummyException
+    val ex = intercept[DummyException] {
+      if (test != 2) throw new DummyException("value was different to 2")
     }
+    assertEquals("value was different to 2", ex.getMessage)
   }
 
   testAsync("asynchronous test") {
@@ -83,11 +85,13 @@ object SimpleTest extends BasicTestSuite {
         if (hello(1) != 2) throw new DummyException
       }
     }
+    ()
   }
 
   test("fail()") {
     def x = 1
     intercept[AssertionError] { if (x == 1) fail() }
+    ()
   }
 
   test("fail(reason)") {
